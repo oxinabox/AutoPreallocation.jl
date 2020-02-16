@@ -1,5 +1,9 @@
 module AutoPreallocation
+using Cassette
 
-greet() = print("Hello World!")
+export avoid_alloctions, record_alloctions
+
+include("record.jl")
+include("replay.jl")
 
 end # module

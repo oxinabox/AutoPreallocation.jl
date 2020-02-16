@@ -1,0 +1,13 @@
+name = "AutoPreallocation"
+uuid = "e7028de2-df94-4053-9fdc-99272086b8d4"
+authors = ["Lyndon White"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

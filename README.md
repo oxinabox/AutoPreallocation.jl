@@ -3,11 +3,10 @@
 [![Build Status](https://travis-ci.com/oxinabox/AutoPreallocation.jl.svg?branch=master)](https://travis-ci.com/oxinabox/AutoPreallocation.jl)
 [![Coveralls](https://coveralls.io/repos/github/oxinabox/AutoPreallocation.jl/badge.svg?branch=master)](https://coveralls.io/github/oxinabox/AutoPreallocation.jl?branch=master)
 
-
-**Have you ever wanted your code allocate less?**
+**Have you ever wanted your code to allocate less?**
 **Have you ever felt explictly preallocating everything was just too hard?**
-**Have you ever thought: _"Everytime I run this function the allocations should always be the same"_?**
-**Well look no further friend. Its AutoPreallocation.jl**
+**Have you ever thought: _"why not just reuse the allocated memory from last time"_?**
+**Well look no further, friend.**
 
 ## How to use:
 The process to use AutoPreallocation.jl is two step:

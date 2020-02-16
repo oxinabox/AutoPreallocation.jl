@@ -3,7 +3,8 @@ using Cassette
 
 export avoid_alloctions, record_alloctions, freeze, reinitialize!
 
-include("record.jl")
-include("replay.jl")
-include("record_utils.jl")
+include("record_types.jl")
+include("recording.jl")
+include("replaying.jl")
+
 end # module

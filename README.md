@@ -51,6 +51,9 @@ AutoPreallocation is also not hugely mature (yet), and if you violate these limi
 
 You cannot reuse the same _record_ of allocations across calls to the function with different allocation patterns.
 Every call that uses a given _record_, must allocate `Array`s of the same type and size, in the same order.
+
+Failure to do so may give errors, or silently incorrect results ([#1](https://github.com/oxinabox/AutoPreallocation.jl/issues/1))
+
 For example:
 
 ```julia
@@ -156,6 +159,6 @@ This is untested.
 
 ### Not appropriate for all uses:
 
- - `avoid_alloctions` makes many small allocations itself #2, so best for if you have large allocations to remove.
+ - `avoid_alloctions` makes many small allocations itself [#2](https://github.com/oxinabox/AutoPreallocation.jl/issues/2), so best for if you have large allocations to remove.
  - the _record_ holds in memory all the allocations, thus preventing garbage collection. If you allocate-and-free a ton of memory to run your algorithm then you may run out of RAM.
  - Only handled allocation in the form of `Array` -- which to be fair underlies a great many data structures in Julia.

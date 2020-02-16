@@ -1,25 +1,14 @@
-struct AllocationReplay
-    allocations::Vector{Array}
+struct AllocationReplay{A}
+    allocations::A
     step::Ref{Int}
 end
 
-function AllocationReplay(record::AllocationRecord)
-    allocations = record.allocations
-    for ii in eachindex(record.allocations)
-        alloc = record.allocations[ii]
-        sz = record.initial_sizes[ii]
-        if size(alloc) !== sz
-            # fix any vectors that were e.g. `push!`ed to.
-            resize!(alloc, sz)
-        end
-    end
-    return AllocationReplay(allocations, Ref(1))
-end
+AllocationReplay(record) = AllocationReplay(record.allocations, Ref(1))
 
 Cassette.@context ReplayCtx
-new_replay_ctx(record::AllocationRecord) = new_replay_ctx(AllocationReplay(record))
+new_replay_ctx(record) = new_replay_ctx(AllocationReplay(record))
 function new_replay_ctx(replay::AllocationReplay)
-    replay.step[] = 1
+    #replay.step[] = 1
     return ReplayCtx(metadata=replay)
 end
 

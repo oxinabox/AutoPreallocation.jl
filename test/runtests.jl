@@ -22,6 +22,6 @@ f_matmul() = ones(32,64) * ones(64, 2)
 
         @assert (@ballocated f_matmul()) === 18_304
         val, record = record_alloctions(f_matmul)
-        @test (@ballocated avoid_alloctions($record, f_matmul)) == 448
+        @test (@ballocated avoid_alloctions($record, f_matmul)) == 352
     end
 end

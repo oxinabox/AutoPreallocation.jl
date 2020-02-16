@@ -1,4 +1,5 @@
-struct AllocationRecord
+abstract type AbstractAllocationRecord end
+struct AllocationRecord <: AbstractAllocationRecord
     allocations::Vector{Array}
     initial_sizes::Vector{Any}  # collection of differently sizes tuples of integers
 end

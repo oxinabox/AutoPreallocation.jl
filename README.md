@@ -25,20 +25,20 @@ julia> @btime foo()
 1×1 Array{Float64,2}:
  2.146304e6
 
-julia> const foo_res, foo_record = record_alloctions(foo)
+julia> const foo_res, foo_record = record_allocations(foo)
 (value = [2.146304e6], allocation_record = AutoPreallocation.AllocationRecord(
     [Array{Float64,2}(undef, (1, 2096)), Array{Float64,2}(undef, (2096, 1024)), Array{Float64,2}(undef, (1024, 1)), Array{Float64,2}(undef, (1, 1024)), Array{Float64,2}(undef, (1, 1))],
     [(1, 2096), (2096, 1024), (1024, 1), (1, 1024), (1, 1)]
 ))
 
-julia> @btime avoid_alloctions($foo_record, foo)
+julia> @btime avoid_allocations($foo_record, foo)
   1.376 ms (29 allocations: 672 bytes)
 1×1 Array{Float64,2}:
  2.146304e6
 ```
 
 #### Tip:
-To avoid having to rerun `record_alloctions` every time the program is used, you can use `repr` on the record object, and then put it in a `const` in your program.
+To avoid having to rerun `record_allocations` every time the program is used, you can use `repr` on the record object, and then put it in a `const` in your program.
 
 ## Limitations (Important)
 Despite the hip introduction, AutoPreallocation is not a tool to use lightly.
@@ -61,19 +61,19 @@ julia> using Test
 julia> twos(dims) = 2*ones(dims)
 twos (generic function with 1 method)
 
-julia> twos_res, twos_record = record_alloctions(twos, (3,6))
+julia> twos_res, twos_record = record_allocations(twos, (3,6))
 (value = [2.0 2.0 … 2.0 2.0; 2.0 2.0 … 2.0 2.0; 2.0 2.0 … 2.0 2.0], allocation_record = AutoPreallocation.AllocationRecord(
     [Array{Float64,2}(undef, (3, 6)), Array{Float64,2}(undef, (3, 6))],
     [(3, 6), (3, 6)]
 ))
 
-julia> @test_throws TypeError avoid_alloctions(twos_record, twos, (3,6,9))
+julia> @test_throws TypeError avoid_allocations(twos_record, twos, (3,6,9))
 Test Passed
       Thrown: TypeError
 
 julia> # If the type is the same and only size differs AutoPreallocation right now won't even
        # error, it will just silently return the wrong result
-       avoid_alloctions(twos_record, twos, (30,60))
+       avoid_allocations(twos_record, twos, (30,60))
 3×6 Array{Float64,2}:
  2.0  2.0  2.0  2.0  2.0  2.0
  2.0  2.0  2.0  2.0  2.0  2.0
@@ -104,16 +104,16 @@ bar (generic function with 1 method)
 julia> @btime bar(3.14);
   684.377 ns (4 allocations: 3.78 KiB)
 
-julia> const _, bar_record = record_alloctions(bar, 3.14);
+julia> const _, bar_record = record_allocations(bar, 3.14);
 
 julia> reinitialize!(bar_record);  # Even the first time after recording
 
-julia> @btime avoid_alloctions($bar_record, bar, 42.0);
+julia> @btime avoid_allocations($bar_record, bar, 42.0);
   595.262 μs (3 allocations: 64 bytes)
 
 julia> reinitialize!(bar_record);
 
-julia> @btime avoid_alloctions($bar_record, bar, 24601);
+julia> @btime avoid_allocations($bar_record, bar, 24601);
   558.079 μs (3 allocations: 64 bytes)
 ```
 
@@ -131,17 +131,17 @@ julia> function mat(x)
        end
 mat (generic function with 1 method)
 
-julia> const mat1, mat_record = record_alloctions(mat, 1);
+julia> const mat1, mat_record = record_allocations(mat, 1);
 
 julia> (mat1,)
 ([1.0 0.0; 0.0 1.0],)
 
-julia> mat2 = avoid_alloctions(mat_record, mat, 2);
+julia> mat2 = avoid_allocations(mat_record, mat, 2);
 
 julia> (mat1, mat2)  # Notice mat1 has changed
 ([2.0 0.0; 0.0 2.0], [2.0 0.0; 0.0 2.0])
 
-julia> mat3 = avoid_alloctions(mat_record, mat, 3);
+julia> mat3 = avoid_allocations(mat_record, mat, 3);
 
 julia> (mat1, mat2, mat3)  # Notice: mat1 and mat2 have changed
 ([3.0 0.0; 0.0 3.0], [3.0 0.0; 0.0 3.0], [3.0 0.0; 0.0 3.0])
@@ -158,6 +158,6 @@ This is untested.
 
 ### Not appropriate for all uses:
 
- - `avoid_alloctions` makes many small allocations itself [#2](https://github.com/oxinabox/AutoPreallocation.jl/issues/2), so best for if you have large allocations to remove.
+ - `avoid_allocations` makes many small allocations itself [#2](https://github.com/oxinabox/AutoPreallocation.jl/issues/2), so best for if you have large allocations to remove.
  - the _record_ holds in memory all the allocations, thus preventing garbage collection. If you allocate-and-free a ton of memory to run your algorithm then you may run out of RAM.
  - Only handled allocation in the form of `Array` -- which to be fair underlies a great many data structures in Julia.

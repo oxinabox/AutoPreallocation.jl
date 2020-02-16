@@ -17,7 +17,7 @@ record_alloc!(ctx::RecordingCtx, val) = record_alloc!(ctx.metadata, val)
 end
 
 
-function record_alloctions(f, args...; kwargs...)
+function record_allocations(f, args...; kwargs...)
     ctx = new_recording_ctx()
     value = Cassette.recurse(ctx, f, args...; kwargs...)
 

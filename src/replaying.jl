@@ -31,7 +31,7 @@ end
     # It seems like having any branch here makes it allocate
     # TODO: reenable this
     #==
-    if rand()>7 # typeof(scheduled) !== Array{T,N} || size(scheduled) !== dims
+    if  typeof(scheduled) !== Array{T,N} || size(scheduled) !== dims
         @warn "Allocation reuse failed. Indicates value dependent allocations." step=ctx.metadata.step[] expected_T=eltype(scheduled) actual_T=T expected_size=size actual_size=dims
         # Fallback to just doing the allocation
         return Array{T,N}(undef, dims)
@@ -42,7 +42,7 @@ end
 end
 
 
-function avoid_alloctions(record, f, args...; kwargs...)
+function avoid_allocations(record, f, args...; kwargs...)
     ctx = new_replay_ctx(record)
     return Cassette.recurse(ctx, f, args...; kwargs...)
 end

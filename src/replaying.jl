@@ -44,5 +44,5 @@ end
 
 function avoid_allocations(record, f, args...; kwargs...)
     ctx = new_replay_ctx(record)
-    return Cassette.recurse(ctx, f, args...; kwargs...)
+    return Cassette.overdub(ctx, f, args...; kwargs...)
 end

@@ -19,7 +19,7 @@ end
 
 function record_allocations(f, args...; kwargs...)
     ctx = new_recording_ctx()
-    value = Cassette.recurse(ctx, f, args...; kwargs...)
+    value = Cassette.overdub(ctx, f, args...; kwargs...)
 
     return (value=value, allocation_record=ctx.metadata,)
 end

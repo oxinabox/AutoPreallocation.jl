@@ -83,6 +83,8 @@ julia> # If the type is the same and only size differs AutoPreallocation right n
 One way to deal with this is to keep track of which parameters change the allocation pattern,
 and then declare one _record_ for each of them.
 
+If one part of your function has nondetermanistic internal allocations you can mark that section to be ignored by wrapping it in `@no_prealloc`.
+
 ### If a function resizes any array that it allocates you need to call `reinitialize!`
 The allocated memory is reuses.
 Which means if you call an operation like `push!` or `append!` that resizes it,

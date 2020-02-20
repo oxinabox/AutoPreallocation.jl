@@ -48,7 +48,8 @@ const WHITE_LIST = [
     Base.iterate,
     Broadcast.broadcasted, Broadcast.instantiate,
     Broadcast.preprocess, Base.not_int,
-    Base.size
+    Base.size,
+    Tuple,
 ]
 
 for F in WHITE_LIST

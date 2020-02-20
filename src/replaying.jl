@@ -21,7 +21,6 @@ end
 end
 @inline next_scheduled_alloc!(ctx::ReplayCtx) = next_scheduled_alloc!(ctx.metadata)
 
-
 @inline function Cassette.overdub(
     ctx::ReplayCtx, ::Type{Array{T,N}}, ::UndefInitializer, dims
 )::Array{T,N} where {T,N}
@@ -41,6 +40,21 @@ end
     return scheduled
 end
 
+
+const WHITE_LIST = [
+    Base.promote_op, Base.to_shape,
+    Core.getfield,
+    Core.:(===),
+    Base.iterate,
+    Broadcast.broadcasted, Broadcast.instantiate,
+    Broadcast.preprocess, Base.not_int,
+    Base.size
+]
+
+for F in WHITE_LIST
+    @eval @inline Cassette.overdub(ctx::RecordingCtx, f::typeof($F), xs...) = f(xs...)
+    @eval @inline Cassette.overdub(ctx::ReplayCtx, f::typeof($F), xs...) = f(xs...)
+end
 
 function avoid_allocations(record, f, args...; kwargs...)
     ctx = new_replay_ctx(record)

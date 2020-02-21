@@ -41,18 +41,18 @@ end
 end
 
 
-const WHITE_LIST = [
+const BLACK_LIST = [
     Base.promote_op, Base.to_shape,
     Core.getfield,
     Core.:(===),
     Base.iterate,
-    Broadcast.broadcasted, Broadcast.instantiate,
+    Broadcast.broadcasted,
     Broadcast.preprocess, Base.not_int,
     Base.size,
     Tuple,
 ]
 
-for F in WHITE_LIST
+for F in BLACK_LIST
     @eval @inline Cassette.overdub(ctx::RecordingCtx, f::typeof($F), xs...) = f(xs...)
     @eval @inline Cassette.overdub(ctx::ReplayCtx, f::typeof($F), xs...) = f(xs...)
 end

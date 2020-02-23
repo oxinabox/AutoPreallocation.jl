@@ -16,5 +16,5 @@ end
 @testset "matmul example" begin
     @assert (@ballocated f_matmul()) === 18_304
     val, record = record_allocations(f_matmul)
-    @test (@ballocated avoid_allocations($record, f_matmul)) == 352
+    @test (@ballocated avoid_allocations($record, f_matmul)) == 256
 end

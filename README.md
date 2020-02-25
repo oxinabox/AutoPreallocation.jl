@@ -13,6 +13,20 @@ The process to use AutoPreallocation.jl is two step:
 1. Generate a *record* of all allocations
 2. Use that *record* to avoid allocations when the function is called
 
+## Functions;
+### `value, record = record_allocations(f, args...; kwargs...)`
+Record the allocations from computing `f(args...; kwargs...)`.
+The returned `record` object is what holds these allocations, to be reused.
+
+### `value = avoid_allocations(record, f, args...; kwargs...)`
+Compute `f(args...; kwargs...)`, while making use of the preallocations stored in the `record`.
+
+### `@no_prealloc(expr)`
+This macro is used within code that one might use AutoPreallocation on.
+It is used to mark a section to have all its allocations ignored.
+They will neither be recorded, nor avoided.
+This is useful if internally to the function its allocations are e.g. not nondetermanistic.
+
 ## Example:
 ```julia
 julia> using AutoPreallocation, BenchmarkTools
@@ -82,6 +96,8 @@ julia> # If the type is the same and only size differs AutoPreallocation right n
 
 One way to deal with this is to keep track of which parameters change the allocation pattern,
 and then declare one _record_ for each of them.
+
+If one part of your function has nondetermanistic internal allocations you can mark that section to be ignored by wrapping it in `@no_prealloc`.
 
 ### If a function resizes any array that it allocates you need to call `reinitialize!`
 The allocated memory is reuses.

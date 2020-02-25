@@ -16,7 +16,6 @@ record_alloc!(ctx::RecordingCtx, val) = record_alloc!(ctx.metadata, val)
     return ret
 end
 
-
 function record_allocations(f, args...; kwargs...)
     ctx = new_recording_ctx()
     value = Cassette.overdub(ctx, f, args...; kwargs...)

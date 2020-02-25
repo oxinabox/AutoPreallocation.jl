@@ -61,3 +61,33 @@ function avoid_allocations(record, f, args...; kwargs...)
     ctx = new_replay_ctx(record)
     return Cassette.overdub(ctx, f, args...; kwargs...)
 end
+
+
+mutable struct FrozenFunction{F}
+    f::F
+    record
+    ctx
+    Freeze(f) = new{typeof(f)}(f)
+end
+
+function (f::FrozenFunction)(xs...)
+    if isdefined(f, :record)
+        f.ctx.metadata.step[] = 1
+        return Cassette.overdub(f.ctx, f.f, xs...)
+    else
+        x, record = record_allocations(f.f, xs...)
+        ctx = AutoPreallocation.new_replay_ctx(record)
+        f.record = record
+        f.ctx = ctx
+        return x
+    end
+end
+
+"""
+    freeze(f)
+
+Freeze a function. This will freeze the allocation behaviour of the function by creating
+a [`FrozenFunction`](@ref). This function will record all the allocations at the first run,
+then in the following run, it will not allocate anymore.
+"""
+freeze(f) = FrozenFunction(f)

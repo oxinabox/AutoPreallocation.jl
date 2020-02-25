@@ -91,3 +91,5 @@ a [`FrozenFunction`](@ref). This function will record all the allocations at the
 then in the following run, it will not allocate anymore.
 """
 freeze(f) = FrozenFunction(f)
+
+Base.show(io::IO, f::FrozenFunction) = print(io, "freeze(", f.f, ")")

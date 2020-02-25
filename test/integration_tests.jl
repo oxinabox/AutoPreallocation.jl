@@ -21,7 +21,7 @@ end
     @test (@ballocated avoid_allocations($record, f_matmul)) <= 352
 
     f = freeze(f_matmul)
-    @test (@ballocated f()) <= 352
+    @test (@ballocated $f()) <= 352
 end
 
 @testset "noprealloc example" begin

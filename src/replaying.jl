@@ -72,7 +72,7 @@ end
     return quote
         if haskey(f.ctx, $xs)
             ctx = f.ctx[$xs]
-            step = ctx.metadata.step::Int
+            step = ctx.metadata.step::Ref{Int}
             step[] = 1
             return Cassette.overdub(ctx, f.f, xs...)
         else

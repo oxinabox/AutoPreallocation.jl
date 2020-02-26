@@ -49,6 +49,7 @@ const BLACK_LIST = [
     Broadcast.broadcasted,
     Broadcast.preprocess, Base.not_int,
     Base.size,
+    Base.haskey,
     Tuple,
 ]
 

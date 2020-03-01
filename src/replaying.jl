@@ -40,6 +40,7 @@ end
     return scheduled
 end
 
+using LinearAlgebra
 
 const BLACK_LIST = [
     Base.promote_op, Base.to_shape,

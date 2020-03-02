@@ -1,4 +1,5 @@
 # In this file we define special-cases to prevent Cassette related inference issues
+using Zygote
 using Zygote: @adjoint, _pullback, Context, cache
 using Cassette
 using Flux

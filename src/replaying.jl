@@ -64,7 +64,7 @@ end
 
 struct FrozenFunction{F}
     f::F
-    ctx::Dict{Tuple, ReplayCtx}
+    ctx::Dict{Tuple, ReplayCtx}  # maps from argument types to the ReplayCtx
     FrozenFunction(f) = new{typeof(f)}(f, Dict{Tuple, ReplayCtx}())
 end
 

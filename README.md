@@ -1,7 +1,6 @@
 # AutoPreallocation
 
 [![Build Status](https://travis-ci.com/oxinabox/AutoPreallocation.jl.svg?branch=master)](https://travis-ci.com/oxinabox/AutoPreallocation.jl)
-[![Coveralls](https://coveralls.io/repos/github/oxinabox/AutoPreallocation.jl/badge.svg?branch=master)](https://coveralls.io/github/oxinabox/AutoPreallocation.jl?branch=master)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 
 **Have you ever wanted your code to allocate less?**

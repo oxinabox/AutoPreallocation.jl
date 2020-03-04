@@ -62,13 +62,13 @@ function avoid_allocations(record, f, args...; kwargs...)
     return Cassette.overdub(ctx, f, args...; kwargs...)
 end
 
-struct FrozenFunction{F}
+struct PreallocatedFunction{F}
     f::F
     ctx::Dict{Tuple, ReplayCtx}  # maps from argument types to the ReplayCtx
-    FrozenFunction(f) = new{typeof(f)}(f, Dict{Tuple, ReplayCtx}())
+    PreallocatedFunction(f) = new{typeof(f)}(f, Dict{Tuple, ReplayCtx}())
 end
 
-@generated function (f::FrozenFunction)(xs...)
+@generated function (f::PreallocatedFunction)(xs...)
     return quote
         if haskey(f.ctx, $xs)
             ctx = f.ctx[$xs]
@@ -85,12 +85,12 @@ end
 end
 
 """
-    freeze(f)
+    preallocate(f)
 
-Freeze a function. This will freeze the allocation behaviour of the function by creating
-a [`FrozenFunction`](@ref). This function will record all the allocations at the first run,
+Preallocate a function. This will preallocate the allocation behaviour of the function by creating
+a [`PreallocatedFunction`](@ref). This function will record all the allocations at the first run,
 then in the following run, it will not allocate anymore.
 """
-freeze(f) = FrozenFunction(f)
+preallocate(f) = PreallocatedFunction(f)
 
-Base.show(io::IO, f::FrozenFunction) = print(io, "freeze(", f.f, ")")
+Base.show(io::IO, f::PreallocatedFunction) = print(io, "preallocate(", f.f, ")")

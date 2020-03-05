@@ -20,7 +20,7 @@ end
     # NOTE: (@Roger-luo) not sure why this is 256 on my machine
     @test (@ballocated avoid_allocations($record, f_matmul)) <= 352
 
-    f = freeze(f_matmul)
+    f = preallocate(f_matmul)
     @test (@ballocated $f()) <= 352
 end
 

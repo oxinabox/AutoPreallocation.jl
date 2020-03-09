@@ -19,6 +19,9 @@ end
     val, record = record_allocations(f_matmul)
     # NOTE: (@Roger-luo) not sure why this is 256 on my machine
     @test (@ballocated avoid_allocations($record, f_matmul)) <= 352
+
+    f = preallocate(f_matmul)
+    @test (@ballocated $f()) <= 352
 end
 
 @testset "noprealloc example" begin

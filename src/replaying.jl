@@ -47,21 +47,21 @@ end
 
 struct PreallocatedFunction{F}
     f::F
-    ctx::Dict{Tuple, ReplayCtx}  # maps from argument types to the ReplayCtx
-    PreallocatedFunction(f) = new{typeof(f)}(f, Dict{Tuple, ReplayCtx}())
+    ctx::Vector{Dict{Tuple, ReplayCtx}}  # maps from argument types to the ReplayCtx
+    PreallocatedFunction(f) = new{typeof(f)}(f, [Dict{Tuple, ReplayCtx}() for _ in 1:Threads.nthreads()])
 end
 
 @generated function (f::PreallocatedFunction)(xs...)
     return quote
-        if haskey(f.ctx, $xs)
-            ctx = f.ctx[$xs]
+        if haskey(f.ctx[Threads.threadid()], $xs)
+            ctx = f.ctx[Threads.threadid()][$xs]
             # step = ctx.metadata.step::Ref{Int}
             ctx.metadata.step[] = 1
             return Cassette.overdub(ctx, f.f, xs...)
         else
             x, record = record_allocations(f.f, xs...)
             ctx = AutoPreallocation.new_replay_ctx(record)
-            f.ctx[$xs] = ctx
+            f.ctx[Threads.threadid()][$xs] = ctx
             return x
         end
     end

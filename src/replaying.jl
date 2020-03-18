@@ -55,7 +55,6 @@ end
     return quote
         if haskey(f.ctx[Threads.threadid()], $xs)
             ctx = f.ctx[Threads.threadid()][$xs]
-            # step = ctx.metadata.step::Ref{Int}
             ctx.metadata.step[] = 1
             return Cassette.overdub(ctx, f.f, xs...)
         else

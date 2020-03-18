@@ -14,6 +14,11 @@ const BLACK_LIST = (
     Base.reduced_indices,
     LinearAlgebra.gemv!,
     Tuple,
+    # skip all AutoPreallocation APIs
+    preallocate,
+    avoid_allocations,
+    freeze,
+    record_allocations,
 )
 
 for F in BLACK_LIST
@@ -26,3 +31,6 @@ end
 
 @inline Cassette.overdub(ctx::RecordingCtx, ::typeof(getindex), x::IdDict, key) = getindex(x, key)
 @inline Cassette.overdub(ctx::ReplayCtx, ::typeof(getindex), x::IdDict, key) = getindex(x, key)
+
+@inline Cassette.overdub(ctx::RecordingCtx, f::PreallocatedFunction, xs...) = f(xs...)
+@inline Cassette.overdub(ctx::ReplayCtx, f::PreallocatedFunction, xs...) = f(xs...)

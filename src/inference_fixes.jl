@@ -32,5 +32,5 @@ end
 @inline Cassette.overdub(ctx::RecordingCtx, ::typeof(getindex), x::IdDict, key) = getindex(x, key)
 @inline Cassette.overdub(ctx::ReplayCtx, ::typeof(getindex), x::IdDict, key) = getindex(x, key)
 
-@inline Cassette.overdub(ctx::RecordingCtx, f::PreallocatedFunction, xs...) = f(xs...)
-@inline Cassette.overdub(ctx::ReplayCtx, f::PreallocatedFunction, xs...) = f(xs...)
+@inline Cassette.overdub(ctx::RecordingCtx, ::typeof(Cassette.overdub), ctx2::RecordingCtx, f::PreallocatedFunction, xs...) = Cassette.overdub(ctx2, f, xs...)
+@inline Cassette.overdub(ctx::ReplayCtx, ::typeof(Cassette.overdub), ctx2::ReplayCtx, f::PreallocatedFunction, xs...) = Cassette.overdub(ctx2, f, xs...)

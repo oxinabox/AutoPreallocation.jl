@@ -35,13 +35,17 @@ end
 @testset "check thread-safe" begin
     f(x, y) = x * y
     results = Vector{Any}(undef, 4)
-    A, B = (rand(4, 4) for _ in 1:2)
-    _, pf = preallocate(A, B)
+    As = [rand(4, 4) for _ in 1:4]
+    Bs = [rand(4, 4) for _ in 1:4]
+    _, pf = preallocate(As[1], Bs[1])
     Threads.@threads for k in 1:4
-        results[k] = pf(A, B)
+        results[k] = pf(As[k], Bs[k])
     end
 
+    # if it's not thread-safe, the result
+    # will be modified by other multiplications
+    # since they will share the same memory
     for k in 1:4
-        @test results[k] ≈ f(A, B)
+        @test results[k] ≈ f(As[k], Bs[k])
     end
 end

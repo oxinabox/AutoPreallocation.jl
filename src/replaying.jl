@@ -44,36 +44,3 @@ function avoid_allocations(record, f, args...; kwargs...)
     ctx = new_replay_ctx(record)
     return Cassette.overdub(ctx, f, args...; kwargs...)
 end
-
-struct PreallocatedFunction{F}
-    f::F
-    ctx::Dict{Tuple, ReplayCtx}  # maps from argument types to the ReplayCtx
-    PreallocatedFunction(f) = new{typeof(f)}(f, Dict{Tuple, ReplayCtx}())
-end
-
-@generated function (f::PreallocatedFunction)(xs...)
-    return quote
-        if haskey(f.ctx, $xs)
-            ctx = f.ctx[$xs]
-            # step = ctx.metadata.step::Ref{Int}
-            ctx.metadata.step[] = 1
-            return Cassette.overdub(ctx, f.f, xs...)
-        else
-            x, record = record_allocations(f.f, xs...)
-            ctx = AutoPreallocation.new_replay_ctx(record)
-            f.ctx[$xs] = ctx
-            return x
-        end
-    end
-end
-
-"""
-    preallocate(f)
-
-Preallocate a function. This will preallocate the allocation behaviour of the function by creating
-a [`PreallocatedFunction`](@ref). This function will record all the allocations at the first run,
-then in the following run, it will not allocate anymore.
-"""
-preallocate(f) = PreallocatedFunction(f)
-
-Base.show(io::IO, f::PreallocatedFunction) = print(io, "preallocate(", f.f, ")")

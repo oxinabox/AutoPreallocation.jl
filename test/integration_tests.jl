@@ -31,3 +31,17 @@ end
     @test record.initial_sizes == [(32, 64), (32, 2)]
     @test (@ballocated avoid_allocations($record, f_matmul_noprealloc)) <= 1520
 end
+
+@testset "check thread-safe" begin
+    f(x, y) = x * y
+    results = Vector{Any}(undef, 4)
+    A, B = (rand(4, 4) for _ in 1:2)
+    _, pf = preallocate(A, B)
+    Threads.@threads for k in 1:4
+        results[k] = pf(A, B)
+    end
+
+    for k in 1:4
+        @test results[k] ≈ f(A, B)
+    end
+end

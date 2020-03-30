@@ -1,6 +1,6 @@
 struct AllocationReplay{A}
     allocations::A
-    step::Ref{Int}
+    step::Base.RefValue{Int}
 end
 
 AllocationReplay(record) = AllocationReplay(record.allocations, Ref(1))

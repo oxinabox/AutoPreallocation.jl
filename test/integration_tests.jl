@@ -37,7 +37,7 @@ end
     results = Vector{Any}(undef, 4)
     As = [rand(4, 4) for _ in 1:4]
     Bs = [rand(4, 4) for _ in 1:4]
-    _, pf = preallocate(As[1], Bs[1])
+    _, pf = preallocate(f, As[1], Bs[1])
     Threads.@threads for k in 1:4
         results[k] = pf(As[k], Bs[k])
     end

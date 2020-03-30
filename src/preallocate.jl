@@ -19,9 +19,7 @@ end
 
 function (f::PreallocatedMethod)(xs...)
     ctx = f.replay_ctxs[Threads.threadid()]
-    # RL: Why this is not type stable at all?
-    step = getfield(ctx.metadata, :step)::Base.RefValue{Int}
-    setindex!(step, 1)::Base.RefValue{Int}
+    ctx.metadata.step[] = 1
     return Cassette.overdub(ctx, f.f, xs...)
 end
 

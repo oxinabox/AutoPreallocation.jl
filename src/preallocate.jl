@@ -9,15 +9,6 @@ struct PreallocatedMethod{F, Args <: Tuple, N, R}
     end
 end
 
-function PreallocatedMethod(f::F, xs...) where F
-    x, record = record_allocations(f, xs...)
-    record = freeze(record)
-    ctxs = ntuple(Threads.nthreads()) do ii
-        new_replay_ctx(ii == 1 ? record : copy(record))
-    end
-    return PreallocatedMethod{F, typeof(xs)}(f, ctxs)
-end
-
 function (f::PreallocatedMethod)(xs...)
     ctx = f.replay_ctxs[Threads.threadid()]
     ctx.metadata.step[] = 1

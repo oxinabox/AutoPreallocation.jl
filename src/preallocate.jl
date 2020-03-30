@@ -2,10 +2,10 @@ export preallocate
 
 struct PreallocatedMethod{F, Args <: Tuple, N, R}
     f::F
-    ctx::NTuple{N, R}
+    replay_ctxs::NTuple{N, R} # one replay context per thread
 
-    function PreallocatedMethod{F, Args}(f::F, ctx::NTuple{N, R}) where {F, Args, N, R}
-        new{F, Args, N, R}(f, ctx)
+    function PreallocatedMethod{F, Args}(f::F, ctxs::NTuple{N, R}) where {F, Args, N, R}
+        new{F, Args, N, R}(f, ctxs)
     end
 end
 
@@ -18,7 +18,7 @@ function PreallocatedMethod(f::F, xs...) where F
 end
 
 function (f::PreallocatedMethod)(xs...)
-    ctx = f.ctx[Threads.threadid()]
+    ctx = f.replay_ctxs[Threads.threadid()]
     # RL: Why this is not type stable at all?
     step = getfield(ctx.metadata, :step)::Base.RefValue{Int}
     setindex!(step, 1)::Base.RefValue{Int}

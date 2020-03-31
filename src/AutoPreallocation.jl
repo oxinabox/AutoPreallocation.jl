@@ -9,5 +9,6 @@ include("recording.jl")
 include("replaying.jl")
 include("inference_fixes.jl")
 include("no_prealloc.jl")
+include("preallocate.jl")
 
 end # module

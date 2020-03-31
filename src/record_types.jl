@@ -15,11 +15,11 @@ function FrozenAllocationRecord(record)
 end
 
 function Base.copy(record::AllocationRecord)
-    return AllocationRecord(copy(record.allocations), copy(record.initial_sizes))
+    return AllocationRecord(copy.(record.allocations), record.initial_sizes)
 end
 
 function Base.copy(record::FrozenAllocationRecord)
-    return FrozenAllocationRecord(copy(record.allocations), copy(record.initial_sizes))
+    return FrozenAllocationRecord(copy.(record.allocations), record.initial_sizes)
 end
 
 """

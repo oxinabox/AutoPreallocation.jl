@@ -20,8 +20,8 @@ end
     # NOTE: (@Roger-luo) not sure why this is 256 on my machine
     @test (@ballocated avoid_allocations($record, f_matmul)) <= 352
 
-    f = preallocate(f_matmul)
-    @test (@ballocated $f()) <= 352
+    _, pf = preallocate(f_matmul)
+    @test (@ballocated $pf()) <= 352
 end
 
 @testset "noprealloc example" begin
@@ -34,18 +34,19 @@ end
 
 @testset "check thread-safe" begin
     f(x, y) = x * y
-    results = Vector{Any}(undef, 4)
-    As = [rand(4, 4) for _ in 1:4]
-    Bs = [rand(4, 4) for _ in 1:4]
+    n = Threads.nthreads()
+    results = Vector{Any}(undef, n)
+    As = [rand(4, 4) for _ in 1:n]
+    Bs = [rand(4, 4) for _ in 1:n]
     _, pf = preallocate(f, As[1], Bs[1])
-    Threads.@threads for k in 1:4
+    Threads.@threads for k in 1:n
         results[k] = pf(As[k], Bs[k])
     end
 
     # if it's not thread-safe, the result
     # will be modified by other multiplications
     # since they will share the same memory
-    for k in 1:4
+    for k in 1:n
         @test results[k] ≈ f(As[k], Bs[k])
     end
 end

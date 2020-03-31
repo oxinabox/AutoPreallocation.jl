@@ -26,9 +26,10 @@ method.
 function preallocate(f::F, xs...) where F
     x, record = record_allocations(f, xs...)
     record = freeze(record)
-    records = (ntuple(_->copy(record), Threads.nthreads() - 1)..., record)
-    ctx = new_replay_ctx.(records)
-    return x, PreallocatedMethod{F, typeof(xs)}(f, ctx)
+    ctxs = ntuple(Threads.nthreads()) do k
+        new_replay_ctx(k == 1 ? copy(record) : record)
+    end
+    return x, PreallocatedMethod{F, typeof(xs)}(f, ctxs)
 end
 
 function Base.show(io::IO, f::PreallocatedMethod{F, Args}) where {F, Args}

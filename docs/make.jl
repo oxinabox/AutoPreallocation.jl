@@ -8,7 +8,7 @@ makedocs(;
     ],
     repo="https://github.com/oxinabox/AutoPreallocation.jl",
     sitename="AutoPreallocation.jl",
-    authors="Lyndon White",
+    authors=["Lyndon White", "Roger Luo"],
 )
 
 deploydocs(;

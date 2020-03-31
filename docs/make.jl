@@ -6,10 +6,9 @@ makedocs(;
     pages=[
         "Home" => "index.md",
     ],
-    repo="https://github.com/oxinabox/AutoPreallocation.jl/blob/{commit}{path}#L{line}",
+    repo="https://github.com/oxinabox/AutoPreallocation.jl",
     sitename="AutoPreallocation.jl",
     authors="Lyndon White",
-    assets=String[],
 )
 
 deploydocs(;

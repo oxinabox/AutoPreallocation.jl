@@ -1,10 +1,27 @@
+"""
+    AbstractAllocationRecord
+
+Abstract type for allocation records.
+"""
 abstract type AbstractAllocationRecord end
+
+"""
+    AllocationRecord <: AbstractAllocationRecord
+
+Allocation record stores all the allocations created by `Array`. You can use
+[`record_allocations`](@ref) to create such a record.
+"""
 struct AllocationRecord <: AbstractAllocationRecord
     allocations::Vector{Array}
     initial_sizes::Vector{Any}  # collection of differently sizes tuples of integers
 end
 AllocationRecord() = AllocationRecord(Vector{Array}(), Vector{Any}())
 
+"""
+    FrozenAllocationRecord{A,S} <: AbstractAllocationRecord
+
+Frozen allocation record stores all allocations in a stype stable way.
+"""
 struct FrozenAllocationRecord{A,S} <: AbstractAllocationRecord
     allocations::A
     initial_sizes::S

@@ -5,6 +5,7 @@ makedocs(;
     format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
+        "Developer Notes" => "dev.md",
     ],
     repo="https://github.com/oxinabox/AutoPreallocation.jl",
     sitename="AutoPreallocation.jl",

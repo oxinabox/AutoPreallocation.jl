@@ -40,6 +40,11 @@ end
     return scheduled
 end
 
+"""
+    avoid_allocations(record, f, args...; kwargs...)
+
+Avoid allocations stored in `record`. See also [`record_allocations`](@ref).
+"""
 function avoid_allocations(record, f, args...; kwargs...)
     ctx = new_replay_ctx(record)
     return Cassette.overdub(ctx, f, args...; kwargs...)

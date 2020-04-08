@@ -1,5 +1,11 @@
 export preallocate
 
+"""
+    PreallocatedMethod{F, Args <: Tuple, N, R}
+
+Type for a preallocated method for method `F` with signature `Args`,
+where `N` is number of threads, `R` is the record type.
+"""
 struct PreallocatedMethod{F, Args <: Tuple, N, R}
     f::F
     replay_ctxs::NTuple{N, R} # one replay context per thread

@@ -11,7 +11,7 @@ end
 
 function (f::PreallocatedMethod)(xs...)
     ctx = f.replay_ctxs[Threads.threadid()]
-    ctx.metadata.step[] = 1
+    reinitialize!(ctx.metadata)
     return Cassette.overdub(ctx, f.f, xs...)
 end
 

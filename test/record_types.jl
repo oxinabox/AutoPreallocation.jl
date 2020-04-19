@@ -33,3 +33,29 @@ end
     # Check canon requirement of a good repr:
     @test eval(Meta.parse(repr(record))) == record
 end
+
+@testset "reinitialize" begin
+    @testset "resizing up: maxsize = $maxsize" for maxsize in (0, 64, 64^3)
+        record = AllocationRecord()
+        record_alloc!(record, ones(maxsize))
+
+        # Access preallocated item direct to mimic resizing it
+        @assert length(record.allocations[1]) == maxsize
+        empty!(record.allocations[1]) # shrink it down
+        @assert length(record.allocations[1]) == 0
+        @test (@ballocated reinitialize!($record)) == 0
+        @test length(record.allocations[1]) == maxsize
+    end
+
+    @testset "resizing down: maxsize = $maxsize" for maxsize in (0, 64, 64^3)
+        record = AllocationRecord()
+        record_alloc!(record, Int[])
+
+        # Access preallocated item direct to mimic resizing it
+        @assert length(record.allocations[1]) == 0
+        append!(record.allocations[1], ones(maxsize)) # grow it
+        @assert length(record.allocations[1]) == maxsize
+        @test (@ballocated reinitialize!($record)) == 0
+        @test length(record.allocations[1]) == 0
+    end
+end

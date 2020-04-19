@@ -40,15 +40,18 @@ function reinitialize!(record)
     for ii in eachindex(record.allocations)
         alloc = record.allocations[ii]
         sz = record.initial_sizes[ii]
-
-        # only vectors can be resized, and
-        # don't check `size(alloc)` as this allocates, unlike `length(alloc)`
-        if ndims(alloc) == 1 && length(alloc) !== first(sz)
-            # fix any vectors that were e.g. `push!`ed to.
-            resize!(alloc, sz...)
-        end
+        reinit!(alloc, sz)  # function barrier here prevents allocations
     end
     return record
+end
+
+function reinit!(alloc, sz)  # this is a function barrier for inside `reinitialize!`
+    # only vectors can be resized, and
+    # don't check `size(alloc)` as this allocates, unlike `length(alloc)`
+    if ndims(alloc) == 1 && length(alloc) !== first(sz)
+        # fix any vectors that were e.g. `push!`ed to.
+        resize!(alloc, first(sz))
+    end
 end
 
 # This can be use to write the record to file so that one can reuse it.

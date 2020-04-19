@@ -50,3 +50,20 @@ end
         @test results[k] ≈ f(As[k], Bs[k])
     end
 end
+
+@testset "resizing operations" begin
+    function push_pop_test(a)
+        x = [0, 0, 0]
+        @test length(x) == 3
+        push!(x, a)
+        push!(x, 10a)
+        @test length(x) == 5
+        pop!(x)
+        @test length(x) == 4
+    end
+
+    _, p_push_pop_test = preallocate(push_pop_test, 1)
+    p_push_pop_test(2)  # check works on second call
+    p_push_pop_test(3)  # check works on third call
+    p_push_pop_test(4)  # check works on fourth call
+end

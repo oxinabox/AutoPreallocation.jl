@@ -1,21 +1,31 @@
 struct AllocationReplay{A}
-    allocations::A
+    record::A
     step::Base.RefValue{Int}
 end
 
-AllocationReplay(record) = AllocationReplay(record.allocations, Ref(1))
+AllocationReplay(record) = AllocationReplay(record, Ref(1))
 
 Cassette.@context ReplayCtx
 new_replay_ctx(record) = new_replay_ctx(AllocationReplay(record))
 function new_replay_ctx(replay::AllocationReplay)
-    #replay.step[] = 1
+    reinitialize!(replay)
     return Cassette.disablehooks(ReplayCtx(metadata=replay))
 end
 
+"""
+    reinitialize!(replay::AllocationReplay)
+
+Return all recorded allocations to original sizes, and reset to first step.
+"""
+function reinitialize!(replay::AllocationReplay)
+    reinitialize!(replay.record)
+    replay.step[] = 1
+    return replay
+end
 
 @inline function next_scheduled_alloc!(replay::AllocationReplay)
     step = replay.step[] :: Int
-    alloc = replay.allocations[step] :: Array
+    alloc = replay.record.allocations[step] :: Array
     replay.step[] = step + 1
     return alloc
 end

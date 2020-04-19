@@ -40,7 +40,10 @@ function reinitialize!(record)
     for ii in eachindex(record.allocations)
         alloc = record.allocations[ii]
         sz = record.initial_sizes[ii]
-        if size(alloc) !== sz
+
+        # only vectors can be resized, and
+        # don't check `size(alloc)` as this allocates, unlike `length(alloc)`
+        if ndims(alloc) == 1 && length(alloc) !== first(sz)
             # fix any vectors that were e.g. `push!`ed to.
             resize!(alloc, sz...)
         end

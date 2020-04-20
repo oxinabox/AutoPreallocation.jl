@@ -1,7 +1,7 @@
 name = "AutoPreallocation"
 uuid = "e7028de2-df94-4053-9fdc-99272086b8d4"
 authors = ["Lyndon White"]
-version = "0.3.0"
+version = "0.3.1"
 
 [deps]
 Cassette = "7057c7e9-c182-5462-911a-8362d720325c"

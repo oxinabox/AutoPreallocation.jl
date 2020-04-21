@@ -16,6 +16,12 @@ record_alloc!(ctx::RecordingCtx, val) = record_alloc!(ctx.metadata, val)
     return ret
 end
 
+"""
+    record_allocations(f, args...; kwargs...)
+
+Create an [`AllocationRecord`](@ref) that stores all the intermediate
+allocations to replay later. See also [`avoid_allocations`](@ref).
+"""
 function record_allocations(f, args...; kwargs...)
     ctx = new_recording_ctx()
     value = Cassette.overdub(ctx, f, args...; kwargs...)

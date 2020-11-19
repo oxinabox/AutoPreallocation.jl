@@ -25,16 +25,16 @@ end
 
 @inline function next_scheduled_alloc!(replay::AllocationReplay)
     step = replay.step[] :: Int
-    alloc = replay.record.allocations[step] :: Array
+    alloc = replay.record.allocations[step]
     replay.step[] = step + 1
     return alloc
 end
 @inline next_scheduled_alloc!(ctx::ReplayCtx) = next_scheduled_alloc!(ctx.metadata)
 
 @inline function Cassette.overdub(
-    ctx::ReplayCtx, ::Type{Array{T,N}}, ::UndefInitializer, dims
-)::Array{T,N} where {T,N}
-    scheduled = next_scheduled_alloc!(ctx) :: Array{T,N}
+    ctx::ReplayCtx, ::Type{A}, ::UndefInitializer, dims...
+)::A where {A<:Array}
+    scheduled = next_scheduled_alloc!(ctx) :: A
 
     # Commented out until we can workout how to do this without allocations on the happy path
     # It seems like having any branch here makes it allocate

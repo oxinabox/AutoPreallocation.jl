@@ -13,7 +13,6 @@ const BLACK_LIST = (
     Base.haskey,
     Base.reduced_indices,
     LinearAlgebra.gemv!,
-    Tuple,
 )
 
 for F in BLACK_LIST

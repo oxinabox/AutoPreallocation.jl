@@ -9,9 +9,9 @@ record_alloc!(ctx::RecordingCtx, val) = record_alloc!(ctx.metadata, val)
 
 
 @inline function Cassette.overdub(
-    ctx::RecordingCtx, ::Type{Array{T,N}}, ::UndefInitializer, dims
-) where {T,N}
-    ret = Array{T, N}(undef, dims)
+    ctx::RecordingCtx, ::Type{A}, ::UndefInitializer, dims...
+) where {A<:Array}
+    ret = A(undef, dims...)
     record_alloc!(ctx, ret)
     return ret
 end

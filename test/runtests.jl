@@ -10,7 +10,8 @@ sizeof(1) == 8 || error("These tests cn only be run on 64-bit systems.")
 const files = (
     "integration_tests.jl",
     "record_types.jl",
-    "readme_examples.jl"
+    "readme_examples.jl",
+    "inference.jl"
 )
 @testset "AutoPreallocation.jl" begin
     @testset "$file" for file in files

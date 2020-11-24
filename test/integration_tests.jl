@@ -11,7 +11,7 @@ f_matmul_noprealloc() = ones(32,64) * @no_prealloc(ones(64, 2))
 @testset "ones example" begin
     @assert (@ballocated f_ones()) === 624
     val, record = record_allocations(f_ones)
-    @test (@ballocated avoid_allocations($record, f_ones)) <= 64
+    @test (@ballocated avoid_allocations($record, f_ones)) <= 80
 end
 
 @testset "matmul example" begin
@@ -50,6 +50,7 @@ end
         @test results[k] ≈ f(As[k], Bs[k])
     end
 end
+
 
 @testset "resizing operations" begin
     function push_pop_test(a)

@@ -12,8 +12,12 @@ Allocation record stores all the allocations created by `Array`. You can use
 [`record_allocations`](@ref) to create such a record.
 """
 struct AllocationRecord <: AbstractAllocationRecord
-    allocations::Vector{AbstractArray}
-    initial_sizes::Vector{Any}  # collection of differently sizes tuples of integers
+    # Note: AbstractArray here is fine because type stability is
+    # enforced later by type-asserts in the replay pass
+    allocations::Vector{AbstractArray} 
+    
+    # collection of differently sizes tuples of integers
+    initial_sizes::Vector{Any}
 end
 AllocationRecord() = AllocationRecord(Vector{AbstractArray}(), Vector{Any}())
 

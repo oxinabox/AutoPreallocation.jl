@@ -32,6 +32,26 @@ end
     @test (@ballocated avoid_allocations($record, f_matmul_noprealloc)) <= 1520
 end
 
+@testset "check thread-safe" begin
+    f(x, y) = x * y
+    n = Threads.nthreads()
+    results = Vector{Any}(undef, n)
+    As = [rand(4, 4) for _ in 1:n]
+    Bs = [rand(4, 4) for _ in 1:n]
+    _, pf = preallocate(f, As[1], Bs[1])
+    Threads.@threads for k in 1:n
+        results[k] = pf(As[k], Bs[k])
+    end
+
+    # if it's not thread-safe, the result
+    # will be modified by other multiplications
+    # since they will share the same memory
+    for k in 1:n
+        @test results[k] ≈ f(As[k], Bs[k])
+    end
+end
+
+
 @testset "resizing operations" begin
     function push_pop_test(a)
         x = [0, 0, 0]

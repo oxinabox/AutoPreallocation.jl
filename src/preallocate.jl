@@ -33,7 +33,7 @@ function preallocate(f::F, xs...) where F
     x, record = record_allocations(f, xs...)
     record = freeze(record)
     ctxs = ntuple(Threads.nthreads()) do k
-        new_replay_ctx(k == 1 ? copy(record) : record)
+        new_replay_ctx(k == 1 ? record : copy(record))
     end
     return x, PreallocatedMethod{F, typeof(xs)}(f, ctxs)
 end
